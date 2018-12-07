@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style>
+            
+            * {
+                box-sizing: border-box;
+            }
+        
+            html, body {
+                height: 100%;
+                color: white;
+            }
+            
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                background-color: black;
+            }
+            
+            input {
+                color: white;
+            }
+            
+            video {
+                width: 100%;
+            }
+        
+        </style>
+    </head>
+    <body>
+        <input type="file" class="fileSelect">
+        
+        <video controls autoplay name="media">
+            <source src="" type="video/webm">
+        </video>
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+        
+            var socket = io();
+            socket.on('connect', function(){
+                console.log('connected');
+            });
+            socket.on('video-message', function(data){
+                console.log(data);
+            });
+            socket.on('disconnect', function(){
+                console.log('disconnected');
+            });
+            
+            let video = document.querySelector('video');
+            let source = document.querySelector('source');
+            let input = document.querySelector('.fileSelect');
+            
+            input.addEventListener('change', (e) => {
+                let file = input.files[0];
+                let objectURL = window.URL.createObjectURL(file);
+                video.src = objectURL;
+            });
+            
+            video.addEventListener('pause', ()=>{
+                console.log('pausing');
+            });
+            
+            video.addEventListener('play', ()=>{
+                console.log('playing');
+            });
+            
+        
+        </script>
+    </body>
+</html>

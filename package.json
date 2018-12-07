@@ -1,0 +1,11 @@
+{
+  "name": "watch-together",
+  "version": "1.0.0",
+  "description": "Watch tv and movies together",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}
