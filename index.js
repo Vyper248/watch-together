@@ -4,13 +4,9 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 io.on('connection', (client) => {
-    console.log('connected to socket.io!');
-
-    //joining room example
-    // client.join('1', () => {
-    //     io.to('1').emit('receive', 'hello2');
-    // });
+    // console.log('connected to socket.io!');
     
+    //when user requests to start a new room
     client.on('newRoom', () => {
         let id = '';
         const possibleValues = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -21,7 +17,7 @@ io.on('connection', (client) => {
         }        
         let roomID = id;
         client.emit('newRoom', roomID);
-        console.log('Joining Room: ', roomID);
+        // console.log('Joining Room: ', roomID);
         client.join(roomID);
     });
     
@@ -31,7 +27,7 @@ io.on('connection', (client) => {
     });
     
     client.on('keypress', data => {
-        console.log('Passing keypress: ', data);
+        // console.log('Passing keypress: ', data);
         client.to(data.id).emit('keypress', data);
     });
     
@@ -40,26 +36,26 @@ io.on('connection', (client) => {
         if (io.sockets.adapter.rooms[data]){
             const length = io.sockets.adapter.rooms[data].length;
             if (length >= 2){
-                console.log('Room Full');
+                // console.log('Room Full');
                 client.emit('error-message', {type: 0, message: 'Room Full'});
                 return;
             } else {
-                console.log('Joining Room: ', data);
+                // console.log('Joining Room: ', data);
                 client.join(data);
                 client.emit('joined', data);
                 return;
             }
         } else {
-            console.log('Joining Room: ', data);
+            // console.log('Joining Room: ', data);
             client.join(data);
             client.emit('joined', data);
         }
     });
     
     //when a user disconnects
-    client.on('disconnect', () => {
-        console.log('disconnected');
-    });
+    // client.on('disconnect', () => {
+    //     // console.log('disconnected');
+    // });
 });
 
 app.use(express.static(__dirname+'/public'));
@@ -68,10 +64,8 @@ app.get('*', function(req, res){
     res.send('404 Page Not Found');
 });
 
-// let port = process.env.PORT || 34862;
-// var ip = process.env.IP;
-// server.listen(port, ip, function(){
-//     console.log('Listening on port '+port);
-// });
-
-server.listen(34862);
+let port = process.env.PORT || 34862;
+var ip = process.env.IP;
+server.listen(port, ip, function(){
+    console.log('Listening on port '+port);
+});
