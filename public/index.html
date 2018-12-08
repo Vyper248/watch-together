@@ -22,18 +22,25 @@
                 background-color: black;
             }
             
+            input[type="text"]{
+                color: black;
+            }
+            
             input {
                 color: white;
             }
             
             video {
                 width: 100%;
+                display: none;
             }
         
         </style>
     </head>
     <body>
-        <input type="file" class="fileSelect">
+        <input type="text" id="id">
+        <input type="file" id="fileSelect">
+        <button id="startBtn">Start!</button>
         
         <video controls autoplay name="media">
             <source src="" type="video/webm">
@@ -42,33 +49,83 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
         
-            var socket = io();
-            socket.on('connect', function(){
-                console.log('connected');
-            });
-            socket.on('video-message', function(data){
-                console.log(data);
-            });
-            socket.on('disconnect', function(){
-                console.log('disconnected');
-            });
             
-            let video = document.querySelector('video');
-            let source = document.querySelector('source');
-            let input = document.querySelector('.fileSelect');
             
-            input.addEventListener('change', (e) => {
-                let file = input.files[0];
+            const video = document.querySelector('video');
+            const source = document.querySelector('source');
+            const fileInput = document.querySelector('#fileSelect');
+            const idInput = document.querySelector('#id');
+            const startBtn = document.querySelector('#startBtn');
+            
+            const socket = io();
+            let blocked = false;
+            let seekTimer = null;
+            let clientID;
+            
+            fileInput.addEventListener('change', () => {
+                let file = fileInput.files[0];
                 let objectURL = window.URL.createObjectURL(file);
                 video.src = objectURL;
+                video.pause();
+            });
+            
+            startBtn.addEventListener('click', () => {
+                let id = idInput.value;
+                clientID = id;
+                video.style.display = 'block';
+                socket.emit('join', id);
             });
             
             video.addEventListener('pause', ()=>{
                 console.log('pausing');
+                socket.emit('video-message', {type: 'pause', id: clientID});
             });
             
             video.addEventListener('play', ()=>{
                 console.log('playing');
+                socket.emit('video-message', {type: 'play', id: clientID});
+            });
+            
+            video.addEventListener('seeking', () => {
+                if (blocked) return;
+                if (seekTimer) {
+                    clearTimeout(seekTimer)
+                    seekTimer = null;
+                }
+                seekTimer = setTimeout(()=>{
+                    socket.emit('video-message', {type: 'seek', time: video.currentTime, id: clientID});
+                }, 100);
+                
+            });
+            
+//            document.querySelector('body').addEventListener('click', ()=>{
+//                console.log('test');
+//                video.currentTime = 10;
+//            });
+            
+            
+            socket.on('connect', function(){
+                console.log('connected');
+            });
+            
+            socket.on('video-message', function(data){
+                if (data.type === 'pause'){
+                    video.pause();
+                } else if (data.type === 'play'){
+                    video.play();
+                } else if (data.type === 'seek'){
+                    blocked = true;
+                    video.currentTime = data.time;
+                    setTimeout(()=>{blocked = false}, 10);
+                }
+            });
+            
+            socket.on('error-message', data => {
+                console.log(data);
+            });
+            
+            socket.on('disconnect', function(){
+                console.log('disconnected');
             });
             
         
