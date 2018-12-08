@@ -11,9 +11,28 @@ io.on('connection', (client) => {
     //     io.to('1').emit('receive', 'hello2');
     // });
     
+    client.on('newRoom', () => {
+        let id = '';
+        const possibleValues = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let length = parseInt(Math.random()*10)+15;
+        for (let i = 0; i < length; i++){
+            const pos = parseInt(Math.random()*possibleValues.length);
+            id += possibleValues[pos];
+        }        
+        let roomID = id;
+        client.emit('newRoom', roomID);
+        console.log('Joining Room: ', roomID);
+        client.join(roomID);
+    });
+    
     //when receives a message, send to everyone else
     client.on('video-message', data => {
         io.to(data.id).emit('video-message', data);
+    });
+    
+    client.on('keypress', data => {
+        console.log('Passing keypress: ', data);
+        client.to(data.id).emit('keypress', data);
     });
     
     //when receive request to join a room
@@ -27,11 +46,13 @@ io.on('connection', (client) => {
             } else {
                 console.log('Joining Room: ', data);
                 client.join(data);
+                client.emit('joined', data);
                 return;
             }
         } else {
             console.log('Joining Room: ', data);
             client.join(data);
+            client.emit('joined', data);
         }
     });
     
