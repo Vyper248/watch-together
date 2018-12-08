@@ -23,7 +23,7 @@ io.on('connection', (client) => {
     
     //when receives a message, send to everyone else
     client.on('video-message', data => {
-        io.to(data.id).emit('video-message', data);
+        client.to(data.id).emit('video-message', data);
     });
     
     client.on('keypress', data => {
