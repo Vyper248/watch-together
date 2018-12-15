@@ -1,0 +1,168 @@
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    position: absolute;
+    top: 50px;
+    font-size: 4em;
+}
+
+html, body {
+    height: 100%;
+    color: white;
+    margin: 0px;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: black;
+}
+
+input[type="text"]{
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+input[type="text"]:focus {
+    border: 1px solid deepskyblue;
+}
+
+input[type="file"] {
+    color: white;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+    display: none;
+}
+
+#videoContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.videoText {
+    position: fixed;
+    bottom: 50px;
+    z-index: 2;
+    font-size: 3em;
+    transition: 0.3s;
+    opacity: 0;
+    color: lightgray;
+    text-shadow: 0px 0px 5px black;
+}
+
+#videoText1 {
+    left: 50px;
+}
+
+#videoText2 {
+    right: 50px;
+}
+
+.button {
+    padding: 10px;
+    width: 150px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 10px;
+    transition: 0.3s;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+}
+
+.button.wide {
+    width: 200px;
+    font-size: 0.9em;
+}
+
+.button:hover {
+    background-color: lightgray;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button:active {
+    background-color: darkgray;
+}
+
+#phase1, #phase2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 50px;
+}
+
+#phase2 {
+    display: none;
+}
+
+#error {
+    color: red;
+    font-weight: bold;
+}
+
+#fullscreenBtn {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    color: gray;
+    background-color: dimgray;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+#fullscreenBtn div {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */   
+}
+
+#fullscreenBtn #f1 {
+    transform: rotate(45deg) translate(-10px);
+}
+
+#fullscreenBtn #f2 {
+    transform: rotate(-45deg) translate(-10px);
+}
+
+#fullscreenBtn #f3 {
+    transform: rotate(135deg) translate(-10px);
+}
+
+#fullscreenBtn #f4 {
+    transform: rotate(-135deg) translate(-10px);
+}
