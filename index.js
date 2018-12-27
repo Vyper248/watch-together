@@ -33,6 +33,11 @@ io.on('connection', (client) => {
     
     //when receive request to join a room
     client.on('join', data => {
+        client.join(data);
+        client.emit('joined', data);
+        return;
+        
+        //for limiting number of people in a room - designed for two, but should work with more, so have currently disabled this feature
         if (io.sockets.adapter.rooms[data]){
             const length = io.sockets.adapter.rooms[data].length;
             if (length >= 2){

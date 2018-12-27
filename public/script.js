@@ -19,6 +19,7 @@ const socket = io();
 let blocked = false;
 let seekTimer = null;
 let clientID;
+let disconnected = false;
 
 let timers = {
     keyTimer1: null,
@@ -82,7 +83,12 @@ document.querySelector('body').addEventListener('keydown', (e) => {
 });
 
 socket.on('connect', function(){
-    console.log('connected');
+    if (disconnected){
+        console.log('Reconnecting with id: ', clientID);
+        socket.emit('join', clientID);
+    } else {
+        console.log('connected');
+    }
 });
 
 socket.on('newRoom', data => {
@@ -91,10 +97,15 @@ socket.on('newRoom', data => {
 });
 
 socket.on('joined', data => {
-    sessionID.innerText = 'Your ID is: '+data;
-    clientID = data;
-    phase1.style.display = 'none';
-    phase2.style.display = 'flex';
+    if (disconnected){
+        disconnected = false;
+        return;
+    } else {
+        sessionID.innerText = 'Your ID is: '+data;
+        clientID = data;
+        phase1.style.display = 'none';
+        phase2.style.display = 'flex';
+    }
 });
 
 socket.on('keypress', data => {
@@ -123,6 +134,7 @@ socket.on('error-message', data => {
 
 socket.on('disconnect', function(){
     console.log('disconnected');
+    disconnected = true;
 });
 
 document.addEventListener('webkitfullscreenchange', () => {
