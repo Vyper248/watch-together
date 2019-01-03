@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Watching Together</title>
+        <link rel="stylesheet" type="text/css" href="/style.css">
+    </head>
+    <body>        
+        <div id="phase2">
+            <h1>Watching Together</h1>
+            <label>Link: <span id="sessionLink"><%= url %></span></label>
+            <label id="copiedLbl">(Click the link to copy to clipboard)</label>
+            <h3>Select Video to Watch</h3>
+            <input type="file" id="fileSelect">
+            <label class="button wide" for="fileSelect" id="fileLabel">Choose a file</label>
+            <button class="button" id="startBtn">Start!</button>
+        </div>
+        
+        <div id="videoContainer">
+            <video controls autoplay name="media" controlsList="nofullscreen nodownload">
+                <source src="" type="video/webm">
+            </video>
+            <div id="videoText1" class="videoText">Test</div>
+            <div id="videoText2" class="videoText">Test</div>
+            <div id="fullscreenBtn">
+                <div id="f1">&#8592;</div>
+                <div id="f2">&#8592;</div>
+                <div id="f3">&#8592;</div>
+                <div id="f4">&#8592;</div>
+            </div>
+        </div>
+        
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const clientID = '<%= id %>';
+        </script>
+        <script src="/script.js"></script>
+    </body>
+</html>

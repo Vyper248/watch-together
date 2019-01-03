@@ -94,6 +94,7 @@ video::-webkit-media-controls-fullscreen-button {
     color: black;
     text-align: center;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .button.wide {
@@ -122,13 +123,18 @@ video::-webkit-media-controls-fullscreen-button {
     padding: 50px;
 }
 
-#phase2 {
-    display: none;
-}
-
 #error {
     color: red;
     font-weight: bold;
+}
+
+#sessionLink {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#copiedLbl {
+    margin-top: 5px;
 }
 
 #fullscreenBtn {

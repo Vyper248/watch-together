@@ -11,40 +11,7 @@
             <h1>Watching Together</h1>
             
             <h3>Start a New Session</h3>
-            <button class="button" id="startNewBtn">Start New</button>
-        
-            <h3>Or Join Existing</h3>
-            <input type="text" id="id">
-            <button class="button" id="joinExistingBtn">Join</button>
-            
-            <div id="error"></div>
+            <a href="/video" class="button" id="startNewBtn">Start New</a>
         </div>
-        
-        <div id="phase2">
-            <h1>Watching Together</h1>
-            <label id="sessionID">Your ID is: </label>
-            <h3>Select Video to Watch</h3>
-            <input type="file" id="fileSelect">
-            <label class="button wide" for="fileSelect" id="fileLabel">Choose a file</label>
-            <button class="button" id="startBtn">Start!</button>
-        </div>
-        
-        <div id="videoContainer">
-            <video controls autoplay name="media" controlsList="nofullscreen nodownload">
-                <source src="" type="video/webm">
-            </video>
-            <div id="videoText1" class="videoText">Test</div>
-            <div id="videoText2" class="videoText">Test</div>
-            <div id="fullscreenBtn">
-                <div id="f1">&#8592;</div>
-                <div id="f2">&#8592;</div>
-                <div id="f3">&#8592;</div>
-                <div id="f4">&#8592;</div>
-            </div>
-        </div>
-        
-        
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="script.js"></script>
     </body>
 </html>

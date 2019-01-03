@@ -2,15 +2,10 @@ const video = document.querySelector('video');
 const source = document.querySelector('source');
 const videoContainer = document.querySelector('#videoContainer');
 const fileInput = document.querySelector('#fileSelect');
-const idInput = document.querySelector('#id');
-const startNewBtn = document.querySelector('#startNewBtn');
-const joinExistingBtn = document.querySelector('#joinExistingBtn');
 const startBtn = document.querySelector('#startBtn');
 const fileLabel = document.querySelector('#fileLabel');
-const sessionID = document.querySelector('#sessionID');
-const phase1 = document.querySelector('#phase1');
+const copiedLbl = document.querySelector('#copiedLbl');
 const phase2 = document.querySelector('#phase2');
-const error = document.querySelector('#error');
 const fullscreenBtn = document.querySelector('#fullscreenBtn');
 const videoText1 = document.querySelector('#videoText1');
 const videoText2 = document.querySelector('#videoText2');
@@ -18,8 +13,6 @@ const videoText2 = document.querySelector('#videoText2');
 const socket = io();
 let blocked = false;
 let seekTimer = null;
-let clientID;
-let disconnected = false;
 
 let timers = {
     keyTimer1: null,
@@ -39,15 +32,26 @@ startBtn.addEventListener('click', () => {
     phase2.style.display = 'none';
 });
 
-startNewBtn.addEventListener('click', () => {
-    socket.emit('newRoom');
-    phase1.style.display = 'none';
-    phase2.style.display = 'flex';
-});
+document.querySelector('#sessionLink').addEventListener('click', function(){
+    const range = document.createRange();
+    const selection = window.getSelection();
 
-joinExistingBtn.addEventListener('click', () => {
-    let id = idInput.value;
-    socket.emit('join', id);
+    // Clear selection from any previous data.
+    selection.removeAllRanges();
+
+    // Make the range select the link.
+    range.selectNodeContents(this);
+
+    // Add that range to the selection.
+    selection.addRange(range);
+
+    // Copy the selection to clipboard.
+    document.execCommand('copy');
+
+    // Clear selection.
+    selection.removeAllRanges();
+    
+    copiedLbl.innerText = 'Copied to clipboard!';
 });
 
 fullscreenBtn.addEventListener('click', () => {
@@ -82,32 +86,6 @@ document.querySelector('body').addEventListener('keydown', (e) => {
     socket.emit('keypress', {code: e.code, key: e.key, id: clientID});
 });
 
-socket.on('connect', function(){
-    if (disconnected){
-        console.log('Reconnecting with id: ', clientID);
-        socket.emit('join', clientID);
-    } else {
-        console.log('connected');
-    }
-});
-
-socket.on('newRoom', data => {
-    clientID = data;
-    sessionID.innerText = 'Your ID is: '+data;
-});
-
-socket.on('joined', data => {
-    if (disconnected){
-        disconnected = false;
-        return;
-    } else {
-        sessionID.innerText = 'Your ID is: '+data;
-        clientID = data;
-        phase1.style.display = 'none';
-        phase2.style.display = 'flex';
-    }
-});
-
 socket.on('keypress', data => {
     receiveKey(videoText1, data, 'keyTimer2');
 });
@@ -126,15 +104,6 @@ socket.on('video-message', data => {
         video.currentTime = data.time;
         setTimeout(()=>{blocked = false}, 100);
     }
-});
-
-socket.on('error-message', data => {
-    error.innerText = data.message;
-});
-
-socket.on('disconnect', function(){
-    console.log('disconnected');
-    disconnected = true;
 });
 
 document.addEventListener('webkitfullscreenchange', () => {

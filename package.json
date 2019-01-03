@@ -5,9 +5,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-      "start": "node index.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "socket.io": "^2.2.0"
   }
