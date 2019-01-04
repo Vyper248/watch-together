@@ -19,19 +19,65 @@ let timers = {
     keyTimer2: null,
 }
 
+/*=====================================FILE INPUT=====================================*/
 fileInput.addEventListener('change', () => {
     let file = fileInput.files[0];
+    useFile(file);
+});
+
+function dropHandler(ev) {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file(s)
+    for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+      // If dropped items aren't files, reject them
+      if (ev.dataTransfer.items[i].kind === 'file') {
+        let file = ev.dataTransfer.items[i].getAsFile();
+        useFile(file);
+      }
+    }
+  } else {
+    // Use DataTransfer interface to access the file(s)
+    for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+        let file = ev.dataTransfer.files[i];
+        useFile(file);
+    }
+  } 
+  
+  // Pass event to removeDragData for cleanup
+  removeDragData(ev);
+}
+
+function dragOverHandler(ev) {
+  ev.preventDefault();
+  event.dataTransfer.dropEffect = "copy";
+}
+
+function removeDragData(ev) {
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to remove the drag data
+    ev.dataTransfer.items.clear();
+  } else {
+    // Use DataTransfer interface to remove the drag data
+    ev.dataTransfer.clearData();
+  }
+}
+
+function useFile(file){
     fileLabel.innerText = file.name;
     let objectURL = window.URL.createObjectURL(file);
     video.src = objectURL;
     video.pause();
-});
+}
 
 startBtn.addEventListener('click', () => {
     videoContainer.style.display = 'flex';
     phase2.style.display = 'none';
 });
 
+/*===================================COPY LINK=======================================*/
 document.querySelector('#sessionLink').addEventListener('click', function(){
     const range = document.createRange();
     const selection = window.getSelection();
@@ -54,6 +100,7 @@ document.querySelector('#sessionLink').addEventListener('click', function(){
     copiedLbl.innerText = 'Copied to clipboard!';
 });
 
+/*======================================VIDEO CONTROLS======================================*/
 fullscreenBtn.addEventListener('click', () => {
     openFullscreen(videoContainer);
     fullscreenBtn.style.display = 'none';
@@ -78,14 +125,33 @@ video.addEventListener('seeking', () => {
     seekTimer = setTimeout(()=>{
         socket.emit('video-message', {type: 'seek', time: video.currentTime, id: clientID});
     }, 100);
-    
 });
 
+document.addEventListener('webkitfullscreenchange', () => {
+    if (!document.webkitIsFullScreen) {
+        fullscreenBtn.style.display = 'block';
+    }
+});
+
+function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+}
+
+/*==========================================CHAT==========================================*/
 document.querySelector('body').addEventListener('keydown', (e) => {
     receiveKey(videoText2, e, 'keyTimer1');
     socket.emit('keypress', {code: e.code, key: e.key, id: clientID});
 });
 
+/*====================================SOCKET MESSAGES====================================*/
 socket.on('keypress', data => {
     receiveKey(videoText1, data, 'keyTimer2');
 });
@@ -103,12 +169,6 @@ socket.on('video-message', data => {
         blocked = true;
         video.currentTime = data.time;
         setTimeout(()=>{blocked = false}, 100);
-    }
-});
-
-document.addEventListener('webkitfullscreenchange', () => {
-    if (!document.webkitIsFullScreen) {
-        fullscreenBtn.style.display = 'block';
     }
 });
 
@@ -135,14 +195,3 @@ function receiveKey(element, data, timer){
     }, 2000);
 }
 
-function openFullscreen(elem) {
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
-        elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-        elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
-        elem.msRequestFullscreen();
-    }
-}

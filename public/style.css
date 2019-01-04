@@ -6,6 +6,7 @@ h1 {
     position: absolute;
     top: 50px;
     font-size: 4em;
+    text-align: center;
 }
 
 html, body {
@@ -42,6 +43,14 @@ input[type="file"] {
     overflow: hidden;
     position: absolute;
     z-index: -1;
+}
+
+#drop_zone {
+    border: 1px solid red;
+}
+
+#startBtn {
+    margin-top: 20px;
 }
 
 video {
