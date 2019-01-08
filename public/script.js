@@ -127,10 +127,6 @@ video.addEventListener('seeking', () => {
     }, 100);
 });
 
-document.addEventListener('keyup', (e) => {
-    console.log(document.isFullScreen);
-});
-
 document.addEventListener('fullscreenchange', closeFullscreen);
 document.addEventListener('webkitfullscreenchange', closeFullscreen);
 document.addEventListener('mozfullscreenchange', closeFullscreen);
