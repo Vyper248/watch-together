@@ -148,7 +148,7 @@ video::-webkit-media-controls-fullscreen-button {
 
 #fullscreenBtn {
     position: fixed;
-    bottom: 50px;
+    top: 50px;
     right: 50px;
     color: gray;
     background-color: dimgray;

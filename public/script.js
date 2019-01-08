@@ -127,11 +127,20 @@ video.addEventListener('seeking', () => {
     }, 100);
 });
 
-document.addEventListener('webkitfullscreenchange', () => {
-    if (!document.webkitIsFullScreen) {
+document.addEventListener('keyup', (e) => {
+    console.log(document.isFullScreen);
+});
+
+document.addEventListener('fullscreenchange', closeFullscreen);
+document.addEventListener('webkitfullscreenchange', closeFullscreen);
+document.addEventListener('mozfullscreenchange', closeFullscreen);
+document.addEventListener('msfullscreenchange', closeFullscreen);
+
+function closeFullscreen(){
+    if (!document.fullscreenElement){
         fullscreenBtn.style.display = 'block';
     }
-});
+}
 
 function openFullscreen(elem) {
     if (elem.requestFullscreen) {
