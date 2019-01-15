@@ -133,7 +133,7 @@ document.addEventListener('mozfullscreenchange', closeFullscreen);
 document.addEventListener('msfullscreenchange', closeFullscreen);
 
 function closeFullscreen(){
-    if (!document.fullscreenElement){
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
         fullscreenBtn.style.display = 'block';
     }
 }
