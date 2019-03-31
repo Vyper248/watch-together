@@ -110,7 +110,6 @@ fullscreenBtn.addEventListener('click', () => {
 });
 
 video.addEventListener('pause', (e)=>{
-    console.log('paused');
     if (spacePressedWhilePlaying) {
         video.play();
         video.removeAttribute("controls")   
