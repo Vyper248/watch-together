@@ -112,7 +112,6 @@ fullscreenBtn.addEventListener('click', () => {
 video.addEventListener('pause', (e)=>{
     if (spacePressedWhilePlaying) {
         video.play();
-        video.removeAttribute("controls")   
         return;
     }
     if (blocked) return;
@@ -164,6 +163,7 @@ function openFullscreen(elem) {
 
 /*==========================================CHAT==========================================*/
 document.querySelector('body').addEventListener('keydown', (e) => {
+    if (!video.paused) video.removeAttribute("controls");
     if (e.which === 32) {
         if (video.paused) spacePressedWhilePaused = true;
         else spacePressedWhilePlaying = true;
@@ -172,11 +172,15 @@ document.querySelector('body').addEventListener('keydown', (e) => {
             spacePressedWhilePaused = false; 
             spacePressedWhilePlaying = false; 
             spaceTimer = null; 
-            video.setAttribute("controls","controls")   
         }, 500);
     }
     receiveKey(videoText2, e, 'keyTimer1');
     socket.emit('keypress', {code: e.code, key: e.key, id: clientID});
+});
+
+/*====================================HIDING CONTROLS====================================*/
+window.addEventListener('mousemove', () => {
+    video.setAttribute("controls","controls");
 });
 
 /*====================================SOCKET MESSAGES====================================*/
@@ -220,6 +224,7 @@ function receiveKey(element, data, timer){
     timers[timer] = setTimeout(()=>{
         element.style.opacity = 0;
         timers[timer] = null;
+        // video.setAttribute("controls","controls");
     }, 2000);
 }
 
