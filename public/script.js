@@ -12,7 +12,10 @@ const videoText2 = document.querySelector('#videoText2');
 
 const socket = io();
 let blocked = false;
+let spacePressedWhilePlaying = false;
+let spacePressedWhilePaused = false;
 let seekTimer = null;
+let spaceTimer = null;
 
 let timers = {
     keyTimer1: null,
@@ -106,12 +109,22 @@ fullscreenBtn.addEventListener('click', () => {
     fullscreenBtn.style.display = 'none';
 });
 
-video.addEventListener('pause', ()=>{
+video.addEventListener('pause', (e)=>{
+    console.log('paused');
+    if (spacePressedWhilePlaying) {
+        video.play();
+        video.removeAttribute("controls")   
+        return;
+    }
     if (blocked) return;
     socket.emit('video-message', {type: 'pause', id: clientID});
 });
 
-video.addEventListener('play', ()=>{
+video.addEventListener('play', (e)=>{
+    if (spacePressedWhilePaused) {
+        video.pause();
+        return;
+    }
     if (blocked) return;
     socket.emit('video-message', {type: 'play', id: clientID});
 });
@@ -152,6 +165,17 @@ function openFullscreen(elem) {
 
 /*==========================================CHAT==========================================*/
 document.querySelector('body').addEventListener('keydown', (e) => {
+    if (e.which === 32) {
+        if (video.paused) spacePressedWhilePaused = true;
+        else spacePressedWhilePlaying = true;
+        if (spaceTimer) clearTimeout(spaceTimer);
+        spaceTimer = setTimeout(() => {
+            spacePressedWhilePaused = false; 
+            spacePressedWhilePlaying = false; 
+            spaceTimer = null; 
+            video.setAttribute("controls","controls")   
+        }, 500);
+    }
     receiveKey(videoText2, e, 'keyTimer1');
     socket.emit('keypress', {code: e.code, key: e.key, id: clientID});
 });
